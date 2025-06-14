@@ -58,8 +58,10 @@ const Index = () => {
                 View Repository
               </a>
             </Button>
-            <Button size="lg" variant="outline">
-              Quick Start Guide
+            <Button size="lg" variant="outline" asChild>
+              <a href="https://github.com/KunjShah01/RL-A2A.github.io/wiki" target="_blank" rel="noopener noreferrer">
+                Quick Start Guide
+              </a>
             </Button>
           </div>
         </div>

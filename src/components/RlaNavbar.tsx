@@ -104,15 +104,17 @@ export default function RlaNavbar() {
 
             {/* GitHub button */}
             <Button variant="outline" size="sm" asChild>
-              <a href="https://github.com/rla2a/protocol" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/KunjShah01/RL-A2A" target="_blank" rel="noopener noreferrer">
                 <Github className="w-4 h-4 mr-2" />
                 GitHub
               </a>
             </Button>
 
             {/* Get Started button */}
-            <Button size="sm">
-              Get Started
+            <Button size="sm" asChild>
+              <a href="https://github.com/KunjShah01/RL-A2A.github.io/wiki" target="_blank" rel="noopener noreferrer">
+                Get Started
+              </a>
             </Button>
           </div>
 
@@ -163,13 +165,15 @@ export default function RlaNavbar() {
             <div className="pt-4 pb-2 border-t border-border mt-4">
               <div className="flex flex-col space-y-2">
                 <Button variant="outline" size="sm" asChild className="w-full justify-start">
-                  <a href="https://github.com/rla2a/protocol" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/KunjShah01/RL-A2A" target="_blank" rel="noopener noreferrer">
                     <Github className="w-4 h-4 mr-2" />
                     GitHub
                   </a>
                 </Button>
-                <Button size="sm" className="w-full">
-                  Get Started
+                <Button size="sm" className="w-full" asChild>
+                  <a href="https://github.com/KunjShah01/RL-A2A.github.io/wiki" target="_blank" rel="noopener noreferrer">
+                    Get Started
+                  </a>
                 </Button>
               </div>
             </div>

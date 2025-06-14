@@ -22,16 +22,18 @@ export default function RlaCTA() {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="group" asChild>
-              <a href="https://github.com/rla2a/protocol" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/KunjShah01/RL-A2A" target="_blank" rel="noopener noreferrer">
                 <Github className="w-4 h-4 mr-2" />
                 Documentation
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </a>
             </Button>
-            <Button size="lg" variant="outline" className="group">
-              <Play className="w-4 h-4 mr-2" />
-              Quick Start Guide
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" variant="outline" className="group" asChild>
+              <a href="https://github.com/KunjShah01/RL-A2A.github.io/wiki" target="_blank" rel="noopener noreferrer">
+                <Play className="w-4 h-4 mr-2" />
+                Quick Start Guide
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </a>
             </Button>
           </div>
           
