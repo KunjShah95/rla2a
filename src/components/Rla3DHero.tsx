@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
@@ -11,6 +10,7 @@ export default function Rla3DHero() {
     renderer?: THREE.WebGLRenderer;
     animationId?: number;
     cleanup?: () => void;
+    isDarkMode?: boolean;
   }>({});
 
   useEffect(() => {
@@ -19,13 +19,25 @@ export default function Rla3DHero() {
     const container = containerRef.current;
     const { offsetWidth: width, offsetHeight: height } = container;
 
-    // Check for dark mode
-    const isDarkMode = document.documentElement.classList.contains('dark') || 
-                       window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Enhanced dark mode detection
+    const checkDarkMode = () => {
+      return document.documentElement.classList.contains('dark') || 
+             document.documentElement.getAttribute('data-theme') === 'dark' ||
+             window.matchMedia('(prefers-color-scheme: dark)').matches;
+    };
 
-    // Scene setup
+    let isDarkMode = checkDarkMode();
+
+    // Scene setup with dynamic theming
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(isDarkMode ? 0x0a0a0a : 0xf8fafc, 10, 50);
+    const updateSceneFog = () => {
+      scene.fog = new THREE.Fog(
+        isDarkMode ? 0x0a0a0a : 0xf8fafc, 
+        10, 
+        50
+      );
+    };
+    updateSceneFog();
     
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
@@ -41,43 +53,80 @@ export default function Rla3DHero() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
 
-    // Enhanced Lighting System
-    const ambientLight = new THREE.AmbientLight(isDarkMode ? 0x1a1a2e : 0x404040, isDarkMode ? 0.4 : 0.6);
+    // Dynamic lighting system that responds to theme
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(isDarkMode ? 0x7dd3fc : 0x3b82f6, isDarkMode ? 1.5 : 1.2);
+    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 1.2);
     directionalLight.position.set(5, 8, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
-    const pointLight1 = new THREE.PointLight(isDarkMode ? 0xff6b6b : 0xf472b6, isDarkMode ? 1.2 : 0.8, 15);
+    const pointLight1 = new THREE.PointLight(0xf472b6, 0.8, 15);
     pointLight1.position.set(-3, 5, 3);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(isDarkMode ? 0x4ecdc4 : 0x06b6d4, isDarkMode ? 1.0 : 0.7, 12);
+    const pointLight2 = new THREE.PointLight(0x06b6d4, 0.7, 12);
     pointLight2.position.set(4, -2, 4);
     scene.add(pointLight2);
 
-    const spotLight = new THREE.SpotLight(isDarkMode ? 0xa8e6cf : 0x10b981, isDarkMode ? 2.0 : 1.5, 20, Math.PI / 6);
+    const spotLight = new THREE.SpotLight(0x10b981, 1.5, 20, Math.PI / 6);
     spotLight.position.set(0, 10, 0);
     spotLight.castShadow = true;
     scene.add(spotLight);
 
-    // Create main neural network
+    // Function to update lighting based on theme
+    const updateLighting = () => {
+      ambientLight.color.setHex(isDarkMode ? 0x1a1a2e : 0x404040);
+      ambientLight.intensity = isDarkMode ? 0.4 : 0.6;
+      
+      directionalLight.color.setHex(isDarkMode ? 0x7dd3fc : 0x3b82f6);
+      directionalLight.intensity = isDarkMode ? 1.5 : 1.2;
+      
+      pointLight1.color.setHex(isDarkMode ? 0xff6b6b : 0xf472b6);
+      pointLight1.intensity = isDarkMode ? 1.2 : 0.8;
+      
+      pointLight2.color.setHex(isDarkMode ? 0x4ecdc4 : 0x06b6d4);
+      pointLight2.intensity = isDarkMode ? 1.0 : 0.7;
+      
+      spotLight.color.setHex(isDarkMode ? 0xa8e6cf : 0x10b981);
+      spotLight.intensity = isDarkMode ? 2.0 : 1.5;
+    };
+
+    // Create main neural network with theme-aware materials
     const mainNetworkGroup = new THREE.Group();
     const nodes: THREE.Mesh[] = [];
     const connections: THREE.Line[] = [];
     const nodeCount = 24;
 
-    // Enhanced node creation with more variety
+    const getNodeColor = (index: number) => {
+      if (isDarkMode) {
+        return index % 4 === 0 ? 0xff6b6b : 
+               index % 4 === 1 ? 0x4ecdc4 : 
+               index % 4 === 2 ? 0xffd93d : 0xa8e6cf;
+      } else {
+        return index % 4 === 0 ? 0xa21caf : 
+               index % 4 === 1 ? 0x3b82f6 : 
+               index % 4 === 2 ? 0xf59e0b : 0x10b981;
+      }
+    };
+
+    const getEmissiveColor = (index: number) => {
+      if (isDarkMode) {
+        return index % 5 === 0 ? 0x4ecdc4 : 0x6366f1;
+      } else {
+        return index % 5 === 0 ? 0x06b6d4 : 0x6366f1;
+      }
+    };
+
+    // Enhanced node creation with theme support
     for (let i = 0; i < nodeCount; i++) {
       const phi = Math.acos(-1 + (2 * i) / nodeCount);
       const theta = Math.sqrt(nodeCount * Math.PI) * phi;
       const r = 2.0 + Math.random() * 0.8;
 
-      // Varied geometry types
       let geometry;
       const shapeType = i % 4;
       switch(shapeType) {
@@ -95,12 +144,8 @@ export default function Rla3DHero() {
       }
 
       const material = new THREE.MeshPhongMaterial({
-        color: isDarkMode ? 
-          (i % 4 === 0 ? 0xff6b6b : i % 4 === 1 ? 0x4ecdc4 : i % 4 === 2 ? 0xffd93d : 0xa8e6cf) :
-          (i % 4 === 0 ? 0xa21caf : i % 4 === 1 ? 0x3b82f6 : i % 4 === 2 ? 0xf59e0b : 0x10b981),
-        emissive: isDarkMode ?
-          (i % 5 === 0 ? 0x4ecdc4 : 0x6366f1) :
-          (i % 5 === 0 ? 0x06b6d4 : 0x6366f1),
+        color: getNodeColor(i),
+        emissive: getEmissiveColor(i),
         emissiveIntensity: isDarkMode ? 0.6 : 0.3,
         roughness: 0.2,
         metalness: 0.6,
@@ -120,7 +165,17 @@ export default function Rla3DHero() {
       mainNetworkGroup.add(node);
     }
 
-    // Enhanced connections with animated materials
+    // Function to update node materials for theme changes
+    const updateNodeMaterials = () => {
+      nodes.forEach((node, i) => {
+        const material = node.material as THREE.MeshPhongMaterial;
+        material.color.setHex(getNodeColor(i));
+        material.emissive.setHex(getEmissiveColor(i));
+        material.emissiveIntensity = isDarkMode ? 0.6 : 0.3;
+      });
+    };
+
+    // Enhanced connections with theme-aware colors
     for (let i = 0; i < nodeCount; i++) {
       for (let j = i + 1; j < nodeCount; j++) {
         const nodeA = nodes[i];
@@ -145,43 +200,70 @@ export default function Rla3DHero() {
       }
     }
 
-    // Add floating particles system
+    // Function to update connection colors
+    const updateConnectionColors = () => {
+      connections.forEach(connection => {
+        const material = connection.material as THREE.LineBasicMaterial;
+        material.color.setHex(isDarkMode ? 0x818cf8 : 0x6366f1);
+      });
+    };
+
+    // Enhanced floating particles with night mode colors
     const particleGroup = new THREE.Group();
-    const particleCount = 100;
+    const particleCount = 150;
     const particles: THREE.Mesh[] = [];
 
     for (let i = 0; i < particleCount; i++) {
       const particleGeometry = new THREE.SphereGeometry(0.02 + Math.random() * 0.03, 8, 8);
       const particleMaterial = new THREE.MeshBasicMaterial({
         color: isDarkMode ? 
-          (Math.random() > 0.5 ? 0x7dd3fc : 0xff6b6b) :
-          (Math.random() > 0.5 ? 0x06b6d4 : 0xf472b6),
+          (Math.random() > 0.5 ? 0x7dd3fc : Math.random() > 0.5 ? 0xff6b6b : 0xa8e6cf) :
+          (Math.random() > 0.5 ? 0x06b6d4 : Math.random() > 0.5 ? 0xf472b6 : 0x10b981),
         transparent: true,
         opacity: 0.6 + Math.random() * 0.4
       });
 
       const particle = new THREE.Mesh(particleGeometry, particleMaterial);
       particle.position.set(
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20
       );
 
       particles.push(particle);
       particleGroup.add(particle);
     }
 
-    // Add secondary orbital rings
+    // Function to update particle colors
+    const updateParticleColors = () => {
+      particles.forEach(particle => {
+        const material = particle.material as THREE.MeshBasicMaterial;
+        const colorChoice = Math.random();
+        if (isDarkMode) {
+          material.color.setHex(
+            colorChoice > 0.66 ? 0x7dd3fc : 
+            colorChoice > 0.33 ? 0xff6b6b : 0xa8e6cf
+          );
+        } else {
+          material.color.setHex(
+            colorChoice > 0.66 ? 0x06b6d4 : 
+            colorChoice > 0.33 ? 0xf472b6 : 0x10b981
+          );
+        }
+      });
+    };
+
+    // Enhanced orbital rings with night mode support
     const ringGroup = new THREE.Group();
-    for (let ringIndex = 0; ringIndex < 3; ringIndex++) {
-      const ringGeometry = new THREE.TorusGeometry(3 + ringIndex * 0.8, 0.05, 8, 100);
+    for (let ringIndex = 0; ringIndex < 4; ringIndex++) {
+      const ringGeometry = new THREE.TorusGeometry(3.5 + ringIndex * 0.9, 0.04, 8, 100);
       const ringMaterial = new THREE.MeshBasicMaterial({
         color: isDarkMode ? 
-          (ringIndex === 0 ? 0x4ecdc4 : ringIndex === 1 ? 0xff6b6b : 0xa8e6cf) :
-          (ringIndex === 0 ? 0x06b6d4 : ringIndex === 1 ? 0xf472b6 : 0x10b981),
+          (ringIndex === 0 ? 0x4ecdc4 : ringIndex === 1 ? 0xff6b6b : ringIndex === 2 ? 0xa8e6cf : 0x7dd3fc) :
+          (ringIndex === 0 ? 0x06b6d4 : ringIndex === 1 ? 0xf472b6 : ringIndex === 2 ? 0x10b981 : 0x3b82f6),
         transparent: true,
-        opacity: 0.3,
-        wireframe: true
+        opacity: 0.2 + ringIndex * 0.1,
+        wireframe: Math.random() > 0.5
       });
 
       const ring = new THREE.Mesh(ringGeometry, ringMaterial);
@@ -190,12 +272,26 @@ export default function Rla3DHero() {
       ringGroup.add(ring);
     }
 
+    // Function to update ring colors
+    const updateRingColors = () => {
+      ringGroup.children.forEach((ring, ringIndex) => {
+        const material = (ring as THREE.Mesh).material as THREE.MeshBasicMaterial;
+        if (isDarkMode) {
+          const colors = [0x4ecdc4, 0xff6b6b, 0xa8e6cf, 0x7dd3fc];
+          material.color.setHex(colors[ringIndex] || 0x7dd3fc);
+        } else {
+          const colors = [0x06b6d4, 0xf472b6, 0x10b981, 0x3b82f6];
+          material.color.setHex(colors[ringIndex] || 0x3b82f6);
+        }
+      });
+    };
+
     scene.add(mainNetworkGroup);
     scene.add(particleGroup);
     scene.add(ringGroup);
     camera.position.z = 4.5;
 
-    // Complex GSAP Animation Timeline
+    // Complex GSAP Animation Timeline with night mode awareness
     const masterTL = gsap.timeline({ repeat: -1 });
 
     // Main network rotation with varying speeds
@@ -371,7 +467,57 @@ export default function Rla3DHero() {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scroll', handleScroll);
 
-    // Enhanced render loop with post-processing effects
+    // Theme change observer
+    const themeObserver = new MutationObserver(() => {
+      const newDarkMode = checkDarkMode();
+      if (newDarkMode !== isDarkMode) {
+        isDarkMode = newDarkMode;
+        sceneRef.current.isDarkMode = isDarkMode;
+        
+        // Animate theme transition
+        gsap.to({}, {
+          duration: 0.8,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            updateSceneFog();
+            updateLighting();
+            updateNodeMaterials();
+            updateConnectionColors();
+            updateParticleColors();
+            updateRingColors();
+          }
+        });
+      }
+    });
+
+    // Observe theme changes
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme']
+    });
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = () => {
+      if (!document.documentElement.classList.contains('dark') && 
+          !document.documentElement.getAttribute('data-theme')) {
+        const newDarkMode = mediaQuery.matches;
+        if (newDarkMode !== isDarkMode) {
+          isDarkMode = newDarkMode;
+          sceneRef.current.isDarkMode = isDarkMode;
+          updateSceneFog();
+          updateLighting();
+          updateNodeMaterials();
+          updateConnectionColors();
+          updateParticleColors();
+          updateRingColors();
+        }
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+
+    // Enhanced render loop with theme awareness
     let time = 0;
     const animate = () => {
       time += 0.01;
@@ -384,11 +530,17 @@ export default function Rla3DHero() {
       particleGroup.rotation.y += 0.002;
       ringGroup.rotation.z += 0.001;
 
-      // Dynamic lighting effects
-      pointLight1.intensity = (Math.sin(time * 2) + 1) * (isDarkMode ? 0.6 : 0.4) + (isDarkMode ? 0.6 : 0.4);
-      pointLight2.position.y = Math.cos(time * 1.5) * 2;
+      // Night mode specific effects
+      if (isDarkMode) {
+        // Enhanced glow effects for dark mode
+        pointLight1.intensity = (Math.sin(time * 2) + 1) * 0.6 + 0.6;
+        spotLight.intensity = (Math.cos(time * 1.8) + 1) * 0.8 + 1.2;
+      } else {
+        // Subtle effects for light mode
+        pointLight1.intensity = (Math.sin(time * 2) + 1) * 0.2 + 0.6;
+        spotLight.intensity = (Math.cos(time * 1.8) + 1) * 0.3 + 1.2;
+      }
 
-      // Render with enhanced effects
       renderer.render(scene, camera);
       sceneRef.current.animationId = requestAnimationFrame(animate);
     };
@@ -411,13 +563,13 @@ export default function Rla3DHero() {
       scene,
       camera,
       renderer,
+      isDarkMode,
       cleanup: () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('scroll', handleScroll);
-        if (sceneRef.current.animationId) {
-          cancelAnimationFrame(sceneRef.current.animationId);
-        }
+        themeObserver.disconnect();
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
         masterTL.kill();
         renderer.dispose();
         container.removeChild(renderer.domElement);
