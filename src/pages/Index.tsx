@@ -1,6 +1,7 @@
 
 // Homepage for RLA2A Protocol – Agent-to-Agent Protocol
 
+import RlaNavbar from "@/components/RlaNavbar";
 import Rla3DHero from "@/components/Rla3DHero";
 import RlaFeatureCards from "@/components/RlaFeatureCards";
 import RlaHowItWorks from "@/components/RlaHowItWorks";
@@ -14,8 +15,11 @@ import { Github } from "lucide-react";
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans text-foreground relative overflow-x-clip">
+      {/* Navigation */}
+      <RlaNavbar />
+
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center min-h-[85vh] pb-8 pt-8 sm:pt-20 bg-gradient-to-b from-background via-blue-50 via-60% to-transparent transition-all">
+      <section className="relative flex flex-col items-center justify-center min-h-[85vh] pb-8 pt-24 bg-gradient-to-b from-background via-blue-50 via-60% to-transparent dark:via-blue-950/20 transition-all">
         <Rla3DHero />
         <div className="relative z-10 w-full max-w-4xl mx-auto px-4 flex flex-col items-center">
           <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight animate-fade-in text-center" style={{ animationDelay: "0.2s" }}>
@@ -42,19 +46,27 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <RlaFeatureCards />
+      <section id="features">
+        <RlaFeatureCards />
+      </section>
 
       {/* Stats Section */}
       <RlaStats />
 
       {/* How it Works / 3-Step Section */}
-      <RlaHowItWorks />
+      <section id="how-it-works">
+        <RlaHowItWorks />
+      </section>
 
       {/* Use Cases Section */}
-      <RlaUseCases />
+      <section id="use-cases">
+        <RlaUseCases />
+      </section>
 
       {/* Technical Specifications */}
-      <RlaTechSpecs />
+      <section id="tech-specs">
+        <RlaTechSpecs />
+      </section>
 
       {/* Call to Action */}
       <RlaCTA />
@@ -74,9 +86,9 @@ const Index = () => {
               <div>
                 <h4 className="font-semibold mb-3">Product</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><a href="#" className="hover:underline">Features</a></li>
+                  <li><a href="#features" className="hover:underline">Features</a></li>
                   <li><a href="#" className="hover:underline">Pricing</a></li>
-                  <li><a href="#" className="hover:underline">Use Cases</a></li>
+                  <li><a href="#use-cases" className="hover:underline">Use Cases</a></li>
                 </ul>
               </div>
               <div>
