@@ -76,13 +76,14 @@ function AnimatedNeuralNet() {
         <line key={idx}>
           <bufferGeometry>
             <bufferAttribute
-              attach="attributes-position"
+              attach={"attributes-position"}
               array={new Float32Array([...a, ...b])}
+              count={2}
               itemSize={3}
             />
           </bufferGeometry>
           <lineBasicMaterial
-            color="#818cf8"
+            color={"#818cf8"}
             transparent={true}
             opacity={opacity}
             linewidth={1}
@@ -114,4 +115,3 @@ export default function Rla3DHero() {
     </div>
   );
 }
-
