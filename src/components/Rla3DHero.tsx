@@ -62,7 +62,6 @@ function AnimatedNeuralNet() {
         <mesh key={i} position={[x, y, z]}>
           <sphereGeometry args={[0.11 + Math.random() * 0.07, 24, 24]} />
           <meshStandardMaterial
-            attach="material"
             color={i % 3 === 0 ? "#a21caf" : i % 3 === 1 ? "#3b82f6" : "#f59e42"}
             emissive={i % 4 === 0 ? "#06b6d4" : "#6366f1"}
             emissiveIntensity={0.45}
@@ -86,11 +85,9 @@ function AnimatedNeuralNet() {
             />
           </bufferGeometry>
           <lineBasicMaterial
-            attach="material"
             color={"#818cf8"}
             transparent
             opacity={opacity}
-            // Note: linewidth only works on some platforms!
           />
         </line>
       ))}
