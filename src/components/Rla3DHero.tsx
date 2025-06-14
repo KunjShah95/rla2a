@@ -42,7 +42,6 @@ function AnimatedNeuralNet() {
   const lines = [];
   for (let i = 0; i < NODE_COUNT; i++) {
     for (let j = i + 1; j < NODE_COUNT; j++) {
-      // Don't overdraw, only connect closer nodes for clarity
       const a = nodes[i];
       const b = nodes[j];
       const dist = Math.sqrt(
@@ -63,6 +62,7 @@ function AnimatedNeuralNet() {
         <mesh key={i} position={[x, y, z]}>
           <sphereGeometry args={[0.11 + Math.random() * 0.07, 24, 24]} />
           <meshStandardMaterial
+            attach="material"
             color={i % 3 === 0 ? "#a21caf" : i % 3 === 1 ? "#3b82f6" : "#f59e42"}
             emissive={i % 4 === 0 ? "#06b6d4" : "#6366f1"}
             emissiveIntensity={0.45}
@@ -75,18 +75,22 @@ function AnimatedNeuralNet() {
       {lines.map(({ a, b, opacity }, idx) => (
         <line key={idx}>
           <bufferGeometry>
-            <bufferAttribute
-              attach={"attributes-position"}
-              array={new Float32Array([...a, ...b])}
-              count={2}
-              itemSize={3}
+            <primitive
+              object={
+                new THREE.BufferAttribute(
+                  new Float32Array([...a, ...b]),
+                  3
+                )
+              }
+              attach="attributes-position"
             />
           </bufferGeometry>
           <lineBasicMaterial
+            attach="material"
             color={"#818cf8"}
-            transparent={true}
+            transparent
             opacity={opacity}
-            linewidth={1}
+            // Note: linewidth only works on some platforms!
           />
         </line>
       ))}
