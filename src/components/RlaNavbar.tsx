@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -9,39 +8,23 @@ export default function RlaNavbar() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Simplified theme detection
+  // Initialize theme state on mount
   useEffect(() => {
-    const checkDarkMode = () => {
-      return document.documentElement.classList.contains('dark');
-    };
-
-    setIsDarkMode(checkDarkMode());
-
-    // Listen for class changes on html element
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(checkDarkMode());
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => {
-      observer.disconnect();
-    };
+    const initialDarkMode = document.documentElement.classList.contains('dark');
+    setIsDarkMode(initialDarkMode);
   }, []);
 
   const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
+    const willBeDark = !isDarkMode;
     
-    if (htmlElement.classList.contains('dark')) {
-      htmlElement.classList.remove('dark');
-      setIsDarkMode(false);
-    } else {
+    if (willBeDark) {
       htmlElement.classList.add('dark');
-      setIsDarkMode(true);
+    } else {
+      htmlElement.classList.remove('dark');
     }
+    
+    setIsDarkMode(willBeDark);
   };
 
   const navLinks = [
