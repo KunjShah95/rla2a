@@ -9,50 +9,38 @@ export default function RlaNavbar() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Check initial theme
+  // Simplified theme detection
   useEffect(() => {
     const checkDarkMode = () => {
-      return document.documentElement.classList.contains('dark') || 
-             document.documentElement.getAttribute('data-theme') === 'dark' ||
-             window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return document.documentElement.classList.contains('dark');
     };
 
     setIsDarkMode(checkDarkMode());
 
-    // Listen for theme changes
+    // Listen for class changes on html element
     const observer = new MutationObserver(() => {
       setIsDarkMode(checkDarkMode());
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class', 'data-theme']
+      attributeFilter: ['class']
     });
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleSystemThemeChange = () => {
-      if (!document.documentElement.classList.contains('dark') && 
-          !document.documentElement.getAttribute('data-theme')) {
-        setIsDarkMode(mediaQuery.matches);
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleSystemThemeChange);
 
     return () => {
       observer.disconnect();
-      mediaQuery.removeEventListener('change', handleSystemThemeChange);
     };
   }, []);
 
   const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
+    const htmlElement = document.documentElement;
     
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
+    if (htmlElement.classList.contains('dark')) {
+      htmlElement.classList.remove('dark');
+      setIsDarkMode(false);
     } else {
-      document.documentElement.classList.remove('dark');
+      htmlElement.classList.add('dark');
+      setIsDarkMode(true);
     }
   };
 
