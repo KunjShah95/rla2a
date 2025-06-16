@@ -7,12 +7,12 @@ import { ArrowRight, Github, BookOpen, Play } from "lucide-react";
 export default function RlaCTA() {
   return (
     <section className="relative z-10 mt-20 px-4 max-w-4xl mx-auto">
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-100">
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border-2 border-blue-100 dark:border-blue-800">
         <CardContent className="p-8 text-center">
           <Badge variant="secondary" className="mb-4 text-xs tracking-widest">
             Get Started
           </Badge>
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="text-3xl font-bold mb-4 text-foreground">
             Ready to Transform Your AI Infrastructure?
           </h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
@@ -37,7 +37,7 @@ export default function RlaCTA() {
             </Button>
           </div>
           
-          <div className="mt-8 pt-6 border-t border-blue-200">
+          <div className="mt-8 pt-6 border-t border-blue-200 dark:border-blue-700">
             <p className="text-sm text-muted-foreground">
               Open source • MIT License • Community driven
             </p>
